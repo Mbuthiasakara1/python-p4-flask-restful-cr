@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 
 from models import db, Newsletter
+from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///newsletters.db'
@@ -47,6 +48,25 @@ class NewsletterByID(Resource):
         mynew= Newsletter.query.filter_by(id=id).first()
         response1=mynew.to_dict()
         return make_response(response1,200)
+    def patch(self,id):
+        mynew= Newsletter.query.filter_by(id=id).first()
+        if 'title' in request.form:
+            mynew.title=request.form['title']
+        if 'body' in request.form: 
+            mynew.body=request.form['body']
+
+        db.session.commit()    
+        return make_response(mynew.to_dict(),200)
+@app.errorhandler(NotFound) 
+def handle_not_found(e):
+    response ={
+        "Not Found": "The requested resource does not exist"
+    } 
+    return make_response(response,404)
+
+        
+    
+         
     
 
 api.add_resource(NewsletterByID ,'/newsletters/<int:id>')

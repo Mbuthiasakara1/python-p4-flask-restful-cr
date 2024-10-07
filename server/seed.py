@@ -15,7 +15,7 @@ with app.app_context():
     for i in range(50):
         newsletter = Newsletter(
             title = fake.text(max_nb_chars=20),
-            body = fake.paragraph(nb_sentences=5),
+            body = fake.paragraph(nb_sentences=1),
         )
         newsletters.append(newsletter)
 
